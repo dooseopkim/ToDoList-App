@@ -51,7 +51,10 @@ yarn start
 ***
 ### Troubleshooting
 
-
-
+  
+    
+      
+        
+***
 Gracias Nicolas!
 

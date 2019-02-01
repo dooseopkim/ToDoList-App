@@ -10,6 +10,7 @@ import {
         Platform 
       } from 'react-native';
 import { Font } from 'expo';
+import ToDo from './ToDo';
 
 const {height, width} = Dimensions.get("window");
 
@@ -26,15 +27,13 @@ export default class App extends React.Component {
   }
   render() {
     const { fontLoaded, newToDo } = this.state;
-    const fontRegular = fontLoaded ? styles.fontRegular : null;
-    const fontBold = fontLoaded ? styles.fontBold : null;
     return (
       <View style={styles.container}>
         <StatusBar barStyle={"light-content"}/>
-        <Text style={[styles.title, fontBold]}>해야 할 일</Text>
+        <Text style={[styles.title, fontLoaded ? styles.NanumBold : ""]}>해야 할 일</Text>
         <View style={styles.card}>
           <TextInput 
-            style={[styles.newToDo, fontRegular]}
+            style={[styles.input, fontLoaded ? styles.NanumRegular : ""]}
             placeholder={"새 할일을 추가하세요.."}
             value={newToDo}
             onChangeText={this._controlNewToDo}
@@ -42,7 +41,9 @@ export default class App extends React.Component {
             returnKeyType={"done"}
             autoCorrect={false}
             />
-          <ScrollView style={styles.toDos}></ScrollView>
+          <ScrollView contentContainerStyle={styles.toDos}>
+            <ToDo/>
+          </ScrollView>
         </View>
       </View>
     );
@@ -70,10 +71,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: "#2B272A"
   },
-  fontRegular: {
+  NanumRegular: {
     fontFamily: "Nanum"
   },
-  fontBold: {
+  NanumBold: {
     fontFamily: "NanumBold"
   },
   title: {
@@ -89,10 +90,13 @@ const styles = StyleSheet.create({
     width: width - 25,
     backgroundColor: "#ffffff"
   },
-  newToDo: {
+  input: {
     padding: 10,
     borderBottomColor: "#C18E35",
     borderBottomWidth: 1,
     fontSize: 20
+  },
+  toDos: {
+    alignItems: "center"
   }
 });

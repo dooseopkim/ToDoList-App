@@ -2,39 +2,65 @@ import React from "react";
 import { StyleSheet,
          View, 
          Text, 
+         TextInput,
          TouchableOpacity,
          Dimensions } from "react-native";
 import { Font } from 'expo';
 import { MaterialIcons } from '@expo/vector-icons';
+import { PropTypes } from 'prop-types';
 
 const {height, width} = Dimensions.get("window");
 
 export default class ToDo extends React.Component{
+    static propTypes = {
+        text: PropTypes.string.isRequired,
+        isCompleted: PropTypes.bool.isRequired,
+        deleteToDo: PropTypes.func.isRequired,
+        id: PropTypes.string.isRequired,
+        unCompleteToDo: PropTypes.func.isRequired,
+        completeToDo: PropTypes.func.isRequired,
+        updateToDo: PropTypes.func.isRequired
+    }
     constructor(props){
         super(props);
         this.state = {
-            fontLoaded: false,
             isEditing: false,
-            isCompleted: false
+            toDoValue: props.text,
+            fontLoaded: false
         }
     }
     componentWillMount(){
         this._fontLoading();
       }    
     render(){
-        const {fontLoaded, isEditing, isCompleted} = this.state;
+        const {isEditing, toDoValue, fontLoaded} = this.state;
+        const { text, id, deleteToDo, isCompleted } = this.props;
         return(
             <View style={styles.container}>
                 <View style={styles.column}>
                     <TouchableOpacity onPress={this._toggleCompleteToDo}>
                         <View style={[styles.circle, isCompleted ? styles.completedCircle : styles.unCompletedCircle]}/>
                     </TouchableOpacity>
-                    <Text 
+                    {isEditing ? (
+                        <TextInput
+                           style={[styles.input, 
+                                   fontLoaded ? styles.NanumRegular : "",
+                                   isCompleted ? styles.completedText : styles.unCompletedText]}
+                           value={toDoValue} 
+                           onChangeText={this._controlInput}
+                           multiline={true}
+                           returnKeyType={"done"}
+                           onBlur={this._finishEditing}
+                           autoCorrect={false}></TextInput>
+                    ) : (
+                        <Text 
                         style={[styles.text, 
                                 fontLoaded ? styles.NanumRegular : "",
                                 isCompleted ? styles.completedText : styles.unCompletedText]}>
-                        Hello I'm ToDo
-                    </Text>
+                        {text}
+                        </Text>
+                    )}
+
                 </View>
                     {isEditing ? (
                         <View style={styles.actions}>
@@ -51,7 +77,10 @@ export default class ToDo extends React.Component{
                                     <MaterialIcons name={"create"} size={20} color={"#26181A"}/>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPressOut={(event) => {
+                                event.stopPropagation();
+                                deleteToDo(id);
+                            }}>
                                 <View style={styles.actionContainer}>
                                     <MaterialIcons name={"close"} size={20} color={"red"}/>
                                 </View>
@@ -62,21 +91,35 @@ export default class ToDo extends React.Component{
             </View>
         );
     }
-    _toggleCompleteToDo = () => {
-        this.setState(prevState => {
-            return({
-                isCompleted: !prevState.isCompleted
-            });
-        });
+    _toggleCompleteToDo = (event) => {
+        event.stopPropagation();
+        const {isCompleted, unCompleteToDo, completeToDo, id} = this.props;
+        if(!isCompleted){
+            completeToDo(id);
+        }else{
+            unCompleteToDo(id);
+        }
     }
-    _startEditing = () => {
+    _startEditing = (event) => {
+        event.stopPropagation();
+        const {text} = this.props;
         this.setState({
-            isEditing: true
+            isEditing: true,
+            toDoValue: text
         })
     }
-    _finishEditing = () => {
+    _finishEditing = (event) => {
+        event.stopPropagation();
+        const { toDoValue } = this.state;
+        const { id, updateToDo } = this.props;
+        updateToDo(id, toDoValue);
         this.setState({
             isEditing: false
+        })
+    }
+    _controlInput = text => {
+        this.setState({
+            toDoValue: text
         })
     }
     _fontLoading = async() => {
@@ -104,7 +147,6 @@ const styles = StyleSheet.create({
     column: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
         width: width/2
     },
     actions: {
@@ -139,5 +181,10 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         marginVertical: 15
+    },
+    input: {
+        width: width / 2,
+        fontSize: 20,
+        marginVertical: 11
     }
 });

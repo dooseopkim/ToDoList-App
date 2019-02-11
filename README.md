@@ -50,11 +50,20 @@ yarn start
 
 ***
 ### Troubleshooting
+.  
 
-  
-    
+
       
         
 ***
+완성된 App은 구글스토에는 올리지 않았지만 사용해보고자 하는 사람은(Android만... ios는 맥이 없어서..)
+[다운로드 링크](https://exp-shell-app-assets.s3.us-west-1.amazonaws.com/android/%40sseopstory/ToDoList-App-55027ba1c7014d989a30475b5cc7b6d9-signed.apk) 사용해보시길.. 안드로이드 사용자만!   
+
+![kakaotalk_20190211_155113717](https://user-images.githubusercontent.com/34496143/52549162-26b38180-2e15-11e9-8173-9a32e8c57375.jpg)  
+이렇게 생겼음!
+.  
+.  
+.  
+
 Gracias Nicolas!
 
